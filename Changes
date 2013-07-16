@@ -1,0 +1,6 @@
+Revision history for Perl extension npc::feed::schema.
+
+0.01  Tue Jul 16 11:52:01 2013
+	- original version; created by h2xs 1.23 with options
+		-AX -n npc::feed::schema
+
