@@ -15,6 +15,9 @@ WriteMakefile(
 require 'SQL::Translator';
 require 'DBD::Pg';
 require 'DBIx::Class::Schema';
+require 'WWW::Curl::Simple';
+require 'Try::Tiny';
 
 # sudo apt-get install postgresql-server-dev-9.1
+# sudo apt-get install libwww-curl-perl
 

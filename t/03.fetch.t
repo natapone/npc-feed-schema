@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 BEGIN { use_ok('npc::feed::schema') };
 BEGIN { use_ok('npc::config') };
 
@@ -25,4 +25,9 @@ my $fetchfeed = $feeds->fetchnext();
 
 isa_ok($fetchfeed, "npc::feed::schema::feed");
 ok ($fetchfeed->id , "return only 1 feed correctly" );
+
+my $fetch_status = $fetchfeed->fetch("testmode");
+ok( $fetch_status =~ /\.xml$/, "save feed as XML file: $fetch_status"   );
+
+
 

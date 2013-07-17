@@ -2,6 +2,9 @@ package npc::feed::schema::feed;
 use base 'DBIx::Class';
 use strict;
 use warnings;
+use WWW::Curl::Simple;
+use Try::Tiny;
+use Data::Dumper;
 
 use npc::feed::resultset::feed;
 
@@ -122,6 +125,71 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 __PACKAGE__->belongs_to('source' => 'npc::feed::schema::source', { "foreign.id" => "self.sourceid" });
+
+sub collectorconfig {
+    my $config = npc::config->get_config('npc-feed-collector');
+    return $config;
+}
+
+sub fetch {
+    my ($self, $path) = @_;
+    
+    my $config = $self->collectorconfig;
+    $path = $config->{'feed_root'}.'/new';
+    
+#    print Dumper($self->_get_link($self->link)) ;
+    
+    my $feed_result = {};
+    my $feed_url = $self->url;
+    do {
+        $feed_result = $self->_get_link($feed_url);
+        $feed_url = $feed_result->{'location'} if $feed_result->{'status'} == -1;
+        
+    } until ($feed_result->{'status'} == 1 or $feed_result->{'status'} == 0 ); 
+    
+    
+    if ($feed_result->{'status'} == 1) {
+        # print to file
+        my $filename = "T".time."F".$self->id.".xml";
+        if ( $filename ne 'testmode') {
+            open (XMLFILE, ">$path/$filename");
+            print XMLFILE $feed_result->{'content'};
+            close (XMLFILE); 
+        }
+        return $filename;
+    } else {
+        return $feed_result->{'error_status'}
+    }
+    
+}
+
+sub _get_link {
+    my ($self, $url) = @_;
+    
+    my $curl = WWW::Curl::Simple->new(timeout=>5);
+    my $res;
+    my $result = {};
+    
+    try {
+        $res = $curl->get($url);
+    } catch {
+        warn "Death link: ".$url; # not $@
+        $result->{'status'}  = -2;
+    };
+    
+    if ($res->is_redirect) {
+        $result->{'location'} = $res->header('location');
+        $result->{'status'}  = -1;
+    } elsif ($res->is_success) {
+        $result->{'content'} = $res->content;
+        $result->{'status'}  = 1;
+    } else {
+        $result->{'status'}  = 0;
+        $result->{'error_status'}  = $res->status_line;
+    }
+    
+    return $result;
+}
 
 1;
 __END__
