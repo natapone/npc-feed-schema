@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 3;
+use Test::More tests => 6;
 BEGIN { use_ok('npc::feed::schema') };
 BEGIN { use_ok('npc::config') };
 
@@ -21,7 +21,12 @@ my $schema = npc::feed::schema->connect(
                                 );
 
 my $feed = $schema->resultset('feed')->find(2);
-is($feed->name,"Tech reviews","Feed id 2 is Tech reviews");
+is($feed->name, "Tech reviews", "Feed:2 is Tech reviews");
+is($feed->source->name, "T3", "Source of feed:2 is T3");
+
+my $source = $schema->resultset('source')->find(2);
+is($source->name, "Cnet", "Source:2 is Cnet");
+ok($source->feeds->count() > 1, "Source:2 has many feeds" );
 
 #use novus::thai::schema;
 #use novus::thai::utils;
