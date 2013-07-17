@@ -134,9 +134,10 @@ sub collectorconfig {
 sub fetch {
     my ($self, $path) = @_;
     
-    my $config = $self->collectorconfig;
-    $path = $config->{'feed_root'}.'/new';
-    
+    if(!defined($path)) {
+        my $config = $self->collectorconfig;
+        $path = $config->{'feed_root'}.'/new';
+    }
 #    print Dumper($self->_get_link($self->link)) ;
     
     my $feed_result = {};
@@ -155,6 +156,15 @@ sub fetch {
             open (XMLFILE, ">$path/$filename");
             print XMLFILE $feed_result->{'content'};
             close (XMLFILE); 
+            
+            # update timestamp
+            my $timestamp = time;
+            my $intv = $self->fetchinterval;
+            $self->update({ 
+                    lasttimestamp   => $timestamp,
+                    fetchnext       => $timestamp + $intv,
+            });
+            
         }
         return $filename;
     } else {

@@ -27,6 +27,7 @@ isa_ok($fetchfeed, "npc::feed::schema::feed");
 ok ($fetchfeed->id , "return only 1 feed correctly" );
 
 my $fetch_status = $fetchfeed->fetch("testmode");
+#my $fetch_status = $fetchfeed->fetch();
 ok( $fetch_status =~ /\.xml$/, "save feed as XML file: $fetch_status"   );
 
 
