@@ -10,3 +10,11 @@ WriteMakefile(
       (ABSTRACT_FROM  => 'lib/npc/feed/schema.pm', # retrieve abstract from module
        AUTHOR         => 'Dong <dong@>') : ()),
 );
+
+
+require 'SQL::Translator';
+require 'DBD::Pg';
+require 'DBIx::Class::Schema';
+
+# sudo apt-get install postgresql-server-dev-9.1
+
