@@ -8,29 +8,22 @@ use base qw(DBIx::Class::ResultSet);
 sub fetchnext {
     my $self = shift;
     
-    
-    print "-------------> Feed resultset\n";
-    
-#    my $feed = $self->search(
-#        {
-#            'active'        => 1,
-#            'opoint'        => 0,
-#            'opointsection' => 0,
-#        },
+    # fetch condition: active, expired (fetchnext < timestamp)
+    my $feed = $self->search(
+        {
+            'active'    => 1,
+            'fetchnext' => { '<' => time },
+        }, {
+            order_by => 'lasttimestamp',
+        }
+    )->first();
 
-#        # To get the same sort order of NULLs in
-#        # both SQLite and PostgreSQL. NULLs should
-#        # sort first.
-#        {
-#            order_by => 'lastpolled is not null, lastpolled',
-#        },
-#    )->first();
-
-#    if ( $feed ) {
-#        get_logger()->debug( 'Next queued Feed has ID #' . $feed->id() );
-#    }
-
-#    return $feed;
+    if ( $feed ) {
+        print 'Next queued Feed has ID #' . $feed->id()."\n";
+        return $feed;
+    } else {
+        return 0;
+    }
 }
 
 

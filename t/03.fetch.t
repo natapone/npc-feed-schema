@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 BEGIN { use_ok('npc::feed::schema') };
 BEGIN { use_ok('npc::config') };
 
@@ -21,7 +21,8 @@ my $schema = npc::feed::schema->connect(
                                 );
 
 my $feeds = $schema->resultset('feed');
-$feeds->fetchnext();
+my $fetchfeed = $feeds->fetchnext();
 
-
+isa_ok($fetchfeed, "npc::feed::schema::feed");
+ok ($fetchfeed->id , "return only 1 feed correctly" );
 
