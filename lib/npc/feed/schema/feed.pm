@@ -3,9 +3,11 @@ use base 'DBIx::Class';
 use strict;
 use warnings;
 
+use npc::feed::resultset::feed;
+
 __PACKAGE__->load_components(qw/ Core/);
 __PACKAGE__->table('feed');
-
+__PACKAGE__->resultset_class("npc::feed::resultset::feed");
 
 __PACKAGE__->add_columns(
     'id' => {
@@ -123,3 +125,9 @@ __PACKAGE__->belongs_to('source' => 'npc::feed::schema::source', { "foreign.id" 
 
 1;
 __END__
+
+=head1 AUTHOR
+
+Natapone C, natapone@gmail.com
+
+=cut
