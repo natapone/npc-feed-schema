@@ -19,7 +19,7 @@ sub fetchnext {
     )->first();
 
     if ( $feed ) {
-        print 'Next queued Feed has ID #' . $feed->id()."\n";
+#        print 'Next queued Feed has ID #' . $feed->id()."\n";
         return $feed;
     } else {
         return 0;
