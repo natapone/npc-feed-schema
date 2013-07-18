@@ -140,6 +140,11 @@ sub fetch {
     }
 #    print Dumper($self->_get_link($self->link)) ;
     
+    # prevent colliding, put it to back of the list
+    $self->update({ 
+            lasttimestamp   => time,
+    });
+    
     my $feed_result = {};
     my $feed_url = $self->url;
     do {
@@ -157,12 +162,11 @@ sub fetch {
             print XMLFILE $feed_result->{'content'};
             close (XMLFILE); 
             
-            # update timestamp
+            # update next fetch time
             my $timestamp = time;
             my $intv = $self->fetchinterval;
             $self->update({ 
-                    lasttimestamp   => $timestamp,
-                    fetchnext       => $timestamp + $intv,
+                    fetchnext   => $timestamp + $intv,
             });
             
         }
