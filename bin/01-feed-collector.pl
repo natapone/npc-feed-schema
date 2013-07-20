@@ -3,17 +3,19 @@ use strict;
 use warnings;
 
 use npc::feed::schema;
-use npc::config;
+#use npc::config;
 use Data::Dumper;
 
-my $config = npc::config->get_config('npc-feed-collector');
+#my $config = npc::config->get_config('npc-feed-collector');
 
-my $schema = npc::feed::schema->connect(
-                                $config->{connect_info}[0], 
-                                $config->{connect_info}[1], 
-                                $config->{connect_info}[2], 
-                                $config->{connect_info}[3], 
-                                );
+#my $schema = npc::feed::schema->connect(
+#                                $config->{connect_info}[0], 
+#                                $config->{connect_info}[1], 
+#                                $config->{connect_info}[2], 
+#                                $config->{connect_info}[3], 
+#                                );
+
+my $schema = npc::feed::schema->connect_schema();
 
 my $feeds = $schema->resultset('feed');
 my $fetchfeed = $feeds->fetchnext();

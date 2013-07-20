@@ -5,6 +5,7 @@ use warnings;
 use WWW::Curl::Simple;
 use Try::Tiny;
 use Data::Dumper;
+use npc::config;
 
 use npc::feed::resultset::feed;
 
